@@ -1,0 +1,22 @@
+# ============================================================
+# Line-ending policy
+#
+# This matters: cmd.exe requires CRLF in .bat files. Without an explicit
+# rule, git may store/check out .bat with LF, and the script then fails at
+# runtime with errors like:
+#   '<line>' is not recognized as an internal or external command
+#   The syntax of the command is incorrect
+# Conversely, shell scripts must be LF, or bash reports
+#   bad interpreter: /bin/bash^M
+# ============================================================
+
+# Windows batch / command scripts -> CRLF
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Shell scripts -> LF
+*.sh text eol=lf
+/mvnw text eol=lf
+
+# Keep the Maven wrapper jar binary
+*.jar binary

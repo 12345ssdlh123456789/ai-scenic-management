@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>景区管理系统 - 登录</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .login-container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            padding: 40px;
+            width: 420px;
+        }
+
+        .login-title {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: bold;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .login-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .message {
+            padding: 12px;
+            margin-bottom: 20px;
+            border-radius: 6px;
+            text-align: center;
+            display: none;
+        }
+
+        .message.error {
+            background: #ffe6e6;
+            color: #d32f2f;
+            border: 1px solid #ffcdd2;
+            display: block;
+        }
+
+        .message.success {
+            background: #e6f7e6;
+            color: #2e7d32;
+            border: 1px solid #c8e6c9;
+            display: block;
+        }
+
+        .test-accounts {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .test-accounts h4 {
+            color: #666;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .test-accounts p {
+            color: #888;
+            font-size: 12px;
+            line-height: 1.8;
+        }
+
+        .test-accounts code {
+            background: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 3px;
+            color: #667eea;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .user-info {
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .logout-btn {
+            padding: 8px 20px;
+            background: #ff5252;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            padding: 10px 20px;
+            background: #f5f5f5;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .nav-btn:hover, .nav-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .content-area {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 6px;
+            min-height: 200px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        th {
+            background: #667eea;
+            color: white;
+        }
+
+        .action-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            background: #667eea;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+<div class="login-container" id="loginContainer">
+    <h2 class="login-title">🎡 景区管理系统</h2>
+
+    <div id="message" class="message"></div>
+
+    <form id="loginForm">
+        <div class="form-group">
+            <label for="username">用户名</label>
+            <input type="text" id="username" name="username" placeholder="请输入用户名" required>
+        </div>
+
+        <div class="form-group">
+            <label for="password">密码</label>
+            <input type="password" id="password" name="password" placeholder="请输入密码" required>
+        </div>
+
+        <button type="submit" class="login-btn" id="loginBtn">登录</button>
+    </form>
+
+    <div class="test-accounts">
+        <h4>📋 测试账号（密码都是: test）</h4>
+        <p>
+            超级管理员: <code>admin</code><br>
+            管理员: <code>manager</code><br>
+            VIP用户: <code>vipuser</code><br>
+            普通用户: <code>normaluser</code>
+        </p>
+    </div>
+</div>
+
+<script>
+    let currentUser = null;
+
+    const loginForm = document.getElementById('loginForm');
+    const messageDiv = document.getElementById('message');
+    const loginContainer = document.getElementById('loginContainer');
+    const loginBtn = document.getElementById('loginBtn');
+
+    loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+
+        loginBtn.disabled = true;
+        loginBtn.textContent = '登录中...';
+        messageDiv.className = 'message';
+        messageDiv.style.display = 'none';
+
+        try {
+            const response = await fetch('/user/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    username: username,
+                    password: password
+                })
+            });
+
+            const result = await response.json();
+
+            if (result.code === 200) {
+                showMessage('success', '✅ 登录成功！正在跳转...');
+                currentUser = result.data.user;
+                localStorage.setItem('loginUser', JSON.stringify(currentUser));
+
+                setTimeout(() => {
+                    showDashboard(currentUser);
+                }, 800);
+            } else {
+                showMessage('error', '❌ ' + result.message);
+                loginBtn.disabled = false;
+                loginBtn.textContent = '登录';
+            }
+        } catch (error) {
+            showMessage('error', '❌ 登录失败，请检查网络连接');
+            console.error('Login error:', error);
+            loginBtn.disabled = false;
+            loginBtn.textContent = '登录';
+        }
+    });
+
+    function showMessage(type, text) {
+        messageDiv.className = 'message ' + type;
+        messageDiv.textContent = text;
+        messageDiv.style.display = 'block';
+    }
+
+    function showDashboard(user) {
+        let navButtons = '';
+
+        navButtons += '<button class="nav-btn active" onclick="loadProjects(this)">🎫 景点项目</button>';
+        navButtons += '<button class="nav-btn" onclick="loadMyOrders(this)">📦 我的订单</button>';
+
+        if (user.role === 'USER') {
+            navButtons += '<button class="nav-btn" onclick="loadVipApply(this)">⭐ VIP申请</button>';
+        }
+
+        if (user.role === 'ADMIN' || user.role === 'SUPER_ADMIN') {
+            navButtons += '<button class="nav-btn" onclick="loadAllOrders(this)">📊 所有订单</button>';
+            navButtons += '<button class="nav-btn" onclick="loadUsers(this)">👥 用户管理</button>';
+        }
+
+        loginContainer.innerHTML = `
+                <div style="width: 900px;">
+                    <div class="dashboard-header">
+                        <div>
+                            <h2>🎡 景区管理系统</h2>
+                            <p class="user-info">欢迎，${user.username}！角色：${user.role}</p>
+                        </div>
+                        <button class="logout-btn" onclick="handleLogout()">退出登录</button>
+                    </div>
+
+                    <div class="nav-menu" id="navMenu">
+                        ${navButtons}
+                    </div>
+
+                    <div class="content-area" id="contentArea">
+                        <h3>请选择功能</h3>
+                    </div>
+                </div>
+            `;
+
+        loadProjects(document.querySelector('.nav-btn'));
+    }
+
+    async function loadProjects(btn) {
+        setActiveButton(btn);
+        const contentArea = document.getElementById('contentArea');
+        contentArea.innerHTML = '<h3>⏳ 加载中...</h3>';
+
+        try {
+            const response = await fetch('/project/list?current=1&size=10');
+            const result = await response.json();
+
+            if (result.code === 200 && result.data.records && result.data.records.length > 0) {
+                let html = '<h3> 景点项目列表</h3><table>';
+                html += '<tr><th>ID</th><th>项目名称</th><th>价格</th><th>库存</th><th>描述</th><th>操作</th></tr>';
+
+                result.data.records.forEach(project => {
+                    html += `<tr>
+                            <td>${project.id}</td>
+                            <td>${project.name}</td>
+                            <td>¥${project.price}</td>
+                            <td>${project.stock}</td>
+                            <td>${project.description || '-'}</td>
+                            <td>
+                                ${currentUser.role !== 'ADMIN' && currentUser.role !== 'SUPER_ADMIN'
+                        ? `<button class="action-btn" onclick="purchaseTicket(${project.id}, '${project.name}', ${project.price})">购买</button>`
+                        : '<span style="color:#999">管理员</span>'}
+                            </td>
+                        </tr>`;
+                });
+
+                html += '</table>';
+                contentArea.innerHTML = html;
+            } else {
+                contentArea.innerHTML = '<h3>暂无项目数据</h3>';
+            }
+        } catch (error) {
+            contentArea.innerHTML = '<h3>❌ 加载失败</h3><p>请检查后端服务是否正常运行</p>';
+            console.error(error);
+        }
+    }
+
+    async function purchaseTicket(projectId, projectName, price) {
+        const quantity = prompt(`购买 ${projectName}\n单价：¥${price}\n请输入购买数量：`, '1');
+
+        if (quantity && !isNaN(quantity) && quantity > 0) {
+            try {
+                const response = await fetch('/order/purchase', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        projectId: projectId,
+                        quantity: parseInt(quantity)
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.code === 200) {
+                    alert('✅ 购票成功！');
+                    loadProjects(document.querySelector('.nav-btn.active'));
+                } else {
+                    alert('❌ ' + result.message);
+                }
+            } catch (error) {
+                alert('❌ 购票失败，请检查网络连接');
+            }
+        }
+    }
+
+    async function loadMyOrders(btn) {
+        setActiveButton(btn);
+        const contentArea = document.getElementById('contentArea');
+        contentArea.innerHTML = '<h3>⏳ 加载中...</h3>';
+
+        try {
+            const response = await fetch('/order/myOrders?current=1&size=10');
+            const result = await response.json();
+
+            if (result.code === 200 && result.data.records && result.data.records.length > 0) {
+                let html = '<h3>📦 我的订单</h3><table>';
+                html += '<tr><th>订单ID</th><th>项目</th><th>数量</th><th>单价</th><th>总价</th><th>状态</th></tr>';
+
+                result.data.records.forEach(order => {
+                    html += `<tr>
+                            <td>${order.id}</td>
+                            <td>${order.projectName}</td>
+                            <td>${order.quantity}</td>
+                            <td>¥${order.unitPrice}</td>
+                            <td>¥${order.totalPrice}</td>
+                            <td>${order.status}</td>
+                        </tr>`;
+                });
+
+                html += '</table>';
+                contentArea.innerHTML = html;
+            } else {
+                contentArea.innerHTML = '<h3>📦 暂无订单</h3>';
+            }
+        } catch (error) {
+            contentArea.innerHTML = '<h3>❌ 加载失败</h3>';
+        }
+    }
+
+    async function loadAllOrders(btn) {
+        setActiveButton(btn);
+        const contentArea = document.getElementById('contentArea');
+        contentArea.innerHTML = '<h3>⏳ 加载中...</h3>';
+
+        try {
+            const response = await fetch('/order/allOrders?current=1&size=10');
+            const result = await response.json();
+
+            if (result.code === 200 && result.data.records && result.data.records.length > 0) {
+                let html = '<h3>📊 所有订单</h3><table>';
+                html += '<tr><th>订单ID</th><th>用户ID</th><th>项目</th><th>数量</th><th>总价</th><th>状态</th></tr>';
+
+                result.data.records.forEach(order => {
+                    html += `<tr>
+                            <td>${order.id}</td>
+                            <td>${order.userId}</td>
+                            <td>${order.projectName || order.projectId}</td>
+                            <td>${order.quantity}</td>
+                            <td>¥${order.totalPrice}</td>
+                            <td>${order.status}</td>
+                        </tr>`;
+                });
+
+                html += '</table>';
+                contentArea.innerHTML = html;
+            } else {
+                contentArea.innerHTML = '<h3>📊 暂无订单</h3>';
+            }
+        } catch (error) {
+            contentArea.innerHTML = '<h3>❌ 加载失败</h3>';
+        }
+    }
+
+    async function loadUsers(btn) {
+        setActiveButton(btn);
+        const contentArea = document.getElementById('contentArea');
+        contentArea.innerHTML = '<h3>⏳ 加载中...</h3>';
+
+        try {
+            const response = await fetch('/user/findAll');
+            const result = await response.json();
+
+            if (result.code === 200 && result.data && result.data.length > 0) {
+                let html = '<h3>👥 用户管理</h3><table>';
+                html += '<tr><th>ID</th><th>用户名</th><th>角色</th><th>手机号</th><th>邮箱</th><th>状态</th></tr>';
+
+                result.data.forEach(user => {
+                    html += `<tr>
+                            <td>${user.id}</td>
+                            <td>${user.username}</td>
+                            <td>${user.role}</td>
+                            <td>${user.phone || '-'}</td>
+                            <td>${user.email || '-'}</td>
+                            <td>${user.status === 1 ? '正常' : '禁用'}</td>
+                        </tr>`;
+                });
+
+                html += '</table>';
+                contentArea.innerHTML = html;
+            } else {
+                contentArea.innerHTML = '<h3> 暂无用户数据</h3>';
+            }
+        } catch (error) {
+            contentArea.innerHTML = '<h3>❌ 加载失败</h3>';
+        }
+    }
+
+    async function loadVipApply(btn) {
+        setActiveButton(btn);
+        const contentArea = document.getElementById('contentArea');
+        contentArea.innerHTML = '<h3>⏳ 加载中...</h3>';
+
+        try {
+            const response = await fetch('/vip/myApplication');
+            const result = await response.json();
+
+            if (result.code === 200 && result.data) {
+                const app = result.data;
+                let html = '<h3>⭐ 我的VIP申请</h3>';
+                html += `<p><strong>申请状态：</strong>${app.status}</p>`;
+                html += `<p><strong>申请理由：</strong>${app.applyReason}</p>`;
+                if (app.adminRemark) {
+                    html += `<p><strong>管理员备注：</strong>${app.adminRemark}</p>`;
+                }
+                contentArea.innerHTML = html;
+            } else {
+                contentArea.innerHTML = '<h3>⭐ 暂无申请记录</h3><p>您可以在此申请成为VIP用户</p>';
+            }
+        } catch (error) {
+            contentArea.innerHTML = '<h3>❌ 加载失败</h3>';
+        }
+    }
+
+    async function handleLogout() {
+        try {
+            await fetch('/user/logout', { method: 'POST' });
+            localStorage.removeItem('loginUser');
+            location.reload();
+        } catch (error) {
+            location.reload();
+        }
+    }
+
+    function setActiveButton(btn) {
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+        const savedUser = localStorage.getItem('loginUser');
+        if (savedUser) {
+            currentUser = JSON.parse(savedUser);
+            showDashboard(currentUser);
+        }
+    });
+</script>
+</body>
+</html>
